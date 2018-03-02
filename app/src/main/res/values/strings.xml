@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="original_title_title">Original title</string>
+    <string name="user_rating_title">User rating</string>
+    <string name="release_date_title">Release date</string>
+    <string name="overview_title">Overview</string>
+    <string name="title_text">The Matrix</string>
+    <string name="rating_text">8.0</string>
+    <string name="user_rating_text">1999-03-30</string>
+    <string name="overview_text">Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth.</string>
+    <string name="movie_background_image">Movie background image</string>
+    <string name="movie_poster_image">Movie poster image</string>
+    <string name="sort">Sort</string>
+    <string name="popular">Popular</string>
+    <string name="highest_rated">Top rated</string>
+    <string name="wrong">Something went wrong!</string>
+    <string name="already_popular">Already displaying popular movies</string>
+    <string name="already_top">Already displaying top rated movies</string>
+    <string name="popular_movies_title">Popular Movies</string>
+    <string name="highest_rated_title">Top Rated Movies</string>
+    <string name="no_internet">No Internet connection!</string>
+</resources>

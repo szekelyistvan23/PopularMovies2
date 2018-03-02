@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:padding="@dimen/bigger_margin"
+    android:background="@color/backgroundColor"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.szekelyistvan.popularmovies.DetailActivity"
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/background_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/background_image_height"
+            android:contentDescription="@string/movie_background_image"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/blank500" />
+
+        <ProgressBar
+            android:id="@+id/detailProgressBar"
+            style="?android:attr/spinnerMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/background_image"
+            app:layout_constraintEnd_toEndOf="@id/background_image"
+            app:layout_constraintStart_toStartOf="@id/background_image"
+            app:layout_constraintTop_toTopOf="@id/background_image" />
+
+        <ImageView
+            android:id="@+id/poster_image"
+            android:layout_width="@dimen/poster_image_width"
+            android:layout_height="@dimen/poster_image_height"
+            android:layout_marginStart="@dimen/bigger_margin"
+            android:layout_marginTop="@dimen/top_margin"
+            android:contentDescription="@string/movie_poster_image"
+            app:layout_constraintBottom_toBottomOf="@+id/background_image"
+            app:layout_constraintStart_toStartOf="@+id/background_image"
+            app:layout_constraintTop_toTopOf="@+id/background_image"
+            app:srcCompat="@drawable/blank185" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/original_title_title"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/original_title"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_rating_title"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/user_rating"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/release_date_title"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/release_date"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/bigger_margin"
+            android:text="@string/overview_title"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/release_date" />
+
+        <android.support.constraint.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="textView3,textView2,textView,textView4"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="352dp" />
+
+        <TextView
+            android:id="@+id/original_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginTop="@dimen/bigger_margin"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            app:layout_constraintTop_toBottomOf="@+id/background_image"
+            tools:text="@string/title_text" />
+
+        <TextView
+            android:id="@+id/user_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            app:layout_constraintTop_toBottomOf="@+id/original_title"
+            tools:text="@string/rating_text" />
+
+        <TextView
+            android:id="@+id/release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            app:layout_constraintTop_toBottomOf="@+id/user_rating"
+            tools:text="@string/user_rating_text" />
+
+        <TextView
+            android:id="@+id/overview"
+            android:layout_width="@dimen/match_constraint"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView4"
+            tools:text="@string/overview_text" />
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</ScrollView>
