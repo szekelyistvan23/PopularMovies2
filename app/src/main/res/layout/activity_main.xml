@@ -12,7 +12,7 @@
         android:id="@+id/main_progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/progress_bar_height"
         android:indeterminate="true"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
