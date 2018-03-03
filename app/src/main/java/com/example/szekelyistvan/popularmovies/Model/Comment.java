@@ -1,7 +1,7 @@
 package com.example.szekelyistvan.popularmovies.Model;
 
 /**
- * Store the comments made by users of themoviedb.org
+ * Stores the comments made by the users of themoviedb.org
  */
 
 public class Comment {
