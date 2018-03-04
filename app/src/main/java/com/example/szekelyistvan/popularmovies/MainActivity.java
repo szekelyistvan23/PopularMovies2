@@ -20,6 +20,7 @@ package com.example.szekelyistvan.popularmovies;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -57,6 +58,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.szekelyistvan.popularmovies.Adapter.MovieAdapter.MOVIE_OBJECT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -148,7 +151,16 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (moviesArray != null && !moviesArray.isEmpty()){
-                            mAdapter = new MovieAdapter(MainActivity.this, moviesArray);
+                            mAdapter = new MovieAdapter(moviesArray, new MovieAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(Movie movie) {
+                                    Bundle args = new Bundle();
+                                    args.putParcelable(MOVIE_OBJECT, movie);
+                                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                                    intent.putExtras(args);
+                                    startActivity(intent);
+                                }
+                            });
                             mRecyclerView.setAdapter(mAdapter);
                             mMainProgressBar.setVisibility(View.INVISIBLE);
                         }

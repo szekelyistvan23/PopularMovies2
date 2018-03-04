@@ -15,15 +15,12 @@
 package com.example.szekelyistvan.popularmovies.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.szekelyistvan.popularmovies.DetailActivity;
 import com.example.szekelyistvan.popularmovies.Model.Movie;
 import com.example.szekelyistvan.popularmovies.R;
 import com.squareup.picasso.Picasso;
@@ -35,34 +32,46 @@ import butterknife.ButterKnife;
 
 /**
  * This is a custom adapter for a RecyclerView, it is displaying only an ImageView.
- * Implements an OnClickListener to open a DetailActivity for the selected item.
+ * Implements an OnClickListener interface to open a DetailActivity for the selected item.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private Context mContext;
+
     private List<Movie> mMovies;
+    private OnItemClickListener mListener;
     public static final String MOVIE_OBJECT = "movie_object";
 
-    public MovieAdapter(Context context, List<Movie> movies) {
-        mContext = context;
-        mMovies = movies;
+    public MovieAdapter(List<Movie> movies, OnItemClickListener listener) {
+        this.mMovies = movies;
+        this.mListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Movie movie);
     }
 
     @Override
     public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.movie_thumbnail, parent, false);
         return new MovieAdapter.MovieViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
-        Picasso.with(mContext)
+    public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, final int position) {
+        Picasso.with(holder.mMoviePoster.getContext())
                 .load(mMovies.get(position).getPosterPath())
                 .placeholder(R.drawable.blank185)
                 .error(R.drawable.error185)
                 .into(holder.mMoviePoster);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onItemClick(mMovies.get(position));
+            }
+        });
     }
 
     @Override
@@ -74,22 +83,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         mMovies = newMovies;
         notifyDataSetChanged();
     }
-    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        @BindView(R.id.movie_thumbnail_image) ImageView mMoviePoster;
+    class MovieViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.movie_thumbnail_image)
+        ImageView mMoviePoster;
+
         public MovieViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
-            ButterKnife.bind(this,itemView);
-        }
-
-        @Override
-        public void onClick(View v) {
-            Bundle args = new Bundle();
-            int position = getAdapterPosition();
-            args.putParcelable(MOVIE_OBJECT, mMovies.get(position));
-            Intent intent = new Intent(mContext, DetailActivity.class);
-            intent.putExtras(args);
-            mContext.startActivity(intent);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
