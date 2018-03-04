@@ -45,7 +45,9 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.release_date) TextView mReleaseDate;
     @BindView(R.id.action_bar_title) TextView mTextViewActionBar;
     @BindView(R.id.detailProgressBar) ProgressBar mDetailProgressBar;
-
+    public static final String DETAIL_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    public static final String DETAIL_URL_LAST_PART = "?api_key=" + BuildConfig.API_KEY +
+            "&language=en-US&page=1&append_to_response=reviews,videos&language=en-US";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
