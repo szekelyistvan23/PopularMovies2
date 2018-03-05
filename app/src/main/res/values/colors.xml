@@ -6,4 +6,5 @@
     <color name="colorAccent">#d50000</color>
     <color name="backgroundColor">#cfd8dc</color>
     <color name="redNavigationBar">#ff8a80</color>
+    <color name="transparent">#69000000</color>
 </resources>

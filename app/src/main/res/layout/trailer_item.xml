@@ -17,8 +17,8 @@
         android:id="@+id/trailerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textStyle="bold"
+        android:background="@color/transparent"
+        android:textColor="@android:color/white"
         tools:text="@string/trailer_name"
         app:layout_constraintBottom_toBottomOf="@+id/trailerImageView"
         app:layout_constraintStart_toStartOf="parent" />
