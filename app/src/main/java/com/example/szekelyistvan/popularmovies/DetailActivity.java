@@ -21,6 +21,7 @@ package com.example.szekelyistvan.popularmovies;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -33,7 +34,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.szekelyistvan.popularmovies.Adapter.MovieAdapter;
+import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.Model.Comment;
 import com.example.szekelyistvan.popularmovies.Model.Movie;
 import com.example.szekelyistvan.popularmovies.Model.Trailer;
@@ -52,14 +53,24 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
     private Movie mMovieDetail;
-    @BindView(R.id.user_rating) TextView mVoteAverage;
-    @BindView(R.id.poster_image) ImageView mPosterPath;
-    @BindView(R.id.original_title) TextView mOriginalTitle;
-    @BindView(R.id.background_image) ImageView mBackdropPath;
-    @BindView(R.id.overview) TextView mOverview;
-    @BindView(R.id.release_date) TextView mReleaseDate;
-    @BindView(R.id.action_bar_title) TextView mTextViewActionBar;
-    @BindView(R.id.detailProgressBar) ProgressBar mDetailProgressBar;
+    @BindView(R.id.user_rating)
+    TextView mVoteAverage;
+    @BindView(R.id.poster_image)
+    ImageView mPosterPath;
+    @BindView(R.id.original_title)
+    TextView mOriginalTitle;
+    @BindView(R.id.background_image)
+    ImageView mBackdropPath;
+    @BindView(R.id.overview)
+    TextView mOverview;
+    @BindView(R.id.release_date)
+    TextView mReleaseDate;
+    @BindView(R.id.action_bar_title)
+    TextView mTextViewActionBar;
+    @BindView(R.id.detailProgressBar)
+    ProgressBar mDetailProgressBar;
+    @BindView(R.id.rv_videos)
+    RecyclerView mTrailersRecyclerView;
     private List<Comment> mCommentsArray;
     private List <Trailer> mTrailersArray;
     public static final String DETAIL_BASE_URL = "https://api.themoviedb.org/3/movie/";

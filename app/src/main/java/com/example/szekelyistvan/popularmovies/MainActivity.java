@@ -44,7 +44,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.szekelyistvan.popularmovies.Adapter.MovieAdapter;
+import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.Model.Movie;
 
 import org.json.JSONArray;
@@ -59,7 +59,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.szekelyistvan.popularmovies.Adapter.MovieAdapter.MOVIE_OBJECT;
+import static com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter.MOVIE_OBJECT;
 
 public class MainActivity extends AppCompatActivity {
 
