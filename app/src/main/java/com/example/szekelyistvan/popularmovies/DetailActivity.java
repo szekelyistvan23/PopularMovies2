@@ -21,6 +21,7 @@ package com.example.szekelyistvan.popularmovies;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
+import com.example.szekelyistvan.popularmovies.Adapters.TrailerAdapter;
 import com.example.szekelyistvan.popularmovies.Model.Comment;
 import com.example.szekelyistvan.popularmovies.Model.Movie;
 import com.example.szekelyistvan.popularmovies.Model.Trailer;
@@ -87,11 +89,19 @@ public class DetailActivity extends AppCompatActivity {
     public static final String JSON_NAME = "name";
     public static final String JSON_TYPE = "type";
     public static final String JSON_TRAILER = "Trailer";
+    public static final String YOUTUBE_URL_FIRST_PART =  "https://img.youtube.com/vi/";
+    public static final String YOUTUBE_LINK_LAST_PART = "/mqdefault.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setCustomView(R.layout.action_bar_title_layout);
+        }
 
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
@@ -101,6 +111,7 @@ public class DetailActivity extends AppCompatActivity {
                 Toast.makeText(DetailActivity.this, "No data available", Toast.LENGTH_SHORT).show();
             }
 
+            setupTrailerRecyclerView();
             setupActionBar();
             setUpAndLoadDataToUi();
             downloadCommentsTrailersData();
@@ -142,18 +153,13 @@ public class DetailActivity extends AppCompatActivity {
 
     /** Sets up a custom action bar, for correct display of movies' titles. */
     private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(R.layout.action_bar_title_layout);
-        }
         ButterKnife.bind(this);
         mTextViewActionBar.setText(mMovieDetail.getTitle());
     }
 
     /** Downloads JSON data from the Internet. */
     private void downloadCommentsTrailersData(){
-//        ButterKnife.bind(this);
+        ButterKnife.bind(this);
         RequestQueue queue = Volley.newRequestQueue(DetailActivity.this);
 
         String url = detailBuildStringForRequest();
@@ -168,6 +174,18 @@ public class DetailActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+                        if (mTrailersArray != null && !mTrailersArray.isEmpty()){
+                            TrailerAdapter mAdapter = new TrailerAdapter(mTrailersArray, new TrailerAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(Trailer trailer) {
+
+                                }
+                            });
+
+                            mTrailersRecyclerView.setAdapter(mAdapter);
+                        }
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -225,7 +243,7 @@ public class DetailActivity extends AppCompatActivity {
             extractedTrailerData = jsonArray.getJSONObject(i);
 
             trailerResult.setId(extractedTrailerData.optString(JSON_ID));
-            trailerResult.setKey(extractedTrailerData.optString(JSON_KEY));
+            trailerResult.setKey(youtubeImageUrl(extractedTrailerData.optString(JSON_KEY)));
             trailerResult.setName(extractedTrailerData.optString(JSON_NAME));
             trailerResult.setType(extractedTrailerData.optString(JSON_TYPE));
 
@@ -235,5 +253,20 @@ public class DetailActivity extends AppCompatActivity {
             trailerResult = new Trailer();
         }
         return resultArray;
+    }
+    private String youtubeImageUrl (String youtubeId){
+        return YOUTUBE_URL_FIRST_PART + youtubeId + YOUTUBE_LINK_LAST_PART;
+    }
+
+    /** Sets up a RecyclerView for trailers. */
+    private void setupTrailerRecyclerView(){
+
+        ButterKnife.bind(this);
+        mTrailersRecyclerView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
+        mTrailersRecyclerView.setLayoutManager(layoutManager);
+
+
     }
 }
