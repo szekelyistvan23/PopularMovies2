@@ -1,10 +1,10 @@
 package com.example.szekelyistvan.popularmovies.Model;
 
 /**
- * Stores the links to a movie's clips on Youtube.
+ * Stores the links to a movie's trailers on Youtube.
  */
 
-public class YoutubeClip {
+public class Trailer {
     private String id;
     private String key;
     private String name;
