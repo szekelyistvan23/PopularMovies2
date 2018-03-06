@@ -11,4 +11,6 @@
     <dimen name="top_margin">80dp</dimen>
     <dimen name="text_size">15sp</dimen>
     <dimen name="progress_bar_height">4dp</dimen>
+    <dimen name="margin_end">2dp</dimen>
+    <dimen name="comment_width">150dp</dimen>
 </resources>

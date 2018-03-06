@@ -37,6 +37,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.szekelyistvan.popularmovies.Adapters.CommentAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.TrailerAdapter;
 import com.example.szekelyistvan.popularmovies.Model.Comment;
@@ -77,6 +78,10 @@ public class DetailActivity extends AppCompatActivity {
     RecyclerView mTrailersRecyclerView;
     @BindView(R.id.trailer_header)
     TextView mTrailerHeader;
+    @BindView(R.id.rv_comments)
+    RecyclerView mCommentsRecyclerView;
+    @BindView(R.id.comment_header)
+    TextView mCommentsHeader;
     private List<Comment> mCommentsArray;
     private List <Trailer> mTrailersArray;
     public static final String DETAIL_BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -113,7 +118,7 @@ public class DetailActivity extends AppCompatActivity {
                 Toast.makeText(DetailActivity.this, "No data available", Toast.LENGTH_SHORT).show();
             }
 
-            setupTrailerRecyclerView();
+            setupRecyclerViews();
             setupActionBar();
             setUpAndLoadDataToUi();
             downloadCommentsTrailersData();
@@ -177,28 +182,8 @@ public class DetailActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        if (mTrailersArray != null && !mTrailersArray.isEmpty()){
-                            TrailerAdapter mAdapter = new TrailerAdapter(mTrailersArray, new TrailerAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(Trailer trailer) {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setData(Uri.parse(YOUTUBE_VIDEO_LINK + trailer.getKey()));
-
-                                    if (intent.resolveActivity(getPackageManager()) != null) {
-                                        startActivity(intent);
-                                    }
-                                }
-                            });
-
-                            mTrailersRecyclerView.setAdapter(mAdapter);
-
-                            if (mTrailersArray.size() == 1){
-                                mTrailerHeader.setText(R.string.trailer);
-                            } else if (mTrailersArray.size() == 0){
-                                mTrailerHeader.setVisibility(View.GONE);
-                                mTrailersRecyclerView.setVisibility(View.GONE);
-                            }
-                        }
+                        trailersRecyclerViewSettings();
+                        commentsRecyclerViewSettings();
 
                     }
                 }, new Response.ErrorListener() {
@@ -268,14 +253,73 @@ public class DetailActivity extends AppCompatActivity {
         return resultArray;
     }
 
-    /** Sets up a RecyclerView for trailers. */
-    private void setupTrailerRecyclerView(){
+    /** Sets up a RecyclerViews for trailers and comments. */
+    private void setupRecyclerViews(){
 
         ButterKnife.bind(this);
         mTrailersRecyclerView.setHasFixedSize(true);
 
-        RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
-        mTrailersRecyclerView.setLayoutManager(layoutManager);
+        RecyclerView.LayoutManager trailerLayoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
+        mTrailersRecyclerView.setLayoutManager(trailerLayoutManager);
+
+        mCommentsRecyclerView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager commentLayoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
+        mCommentsRecyclerView.setLayoutManager(commentLayoutManager);
+    }
+
+    private void trailersRecyclerViewSettings(){
+        ButterKnife.bind(this);
+        if (mTrailersArray != null && !mTrailersArray.isEmpty()){
+            TrailerAdapter mTrailerAdapter = new TrailerAdapter(mTrailersArray, new TrailerAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Trailer trailer) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(YOUTUBE_VIDEO_LINK + trailer.getKey()));
+
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
+                }
+            });
+
+            mTrailersRecyclerView.setAdapter(mTrailerAdapter);
+
+            if (mTrailersArray.size() == 1){
+                mTrailerHeader.setText(R.string.trailer);
+            }
+        }
+        if (mTrailersArray == null || mTrailersArray.size() == 0){
+            mTrailerHeader.setVisibility(View.GONE);
+            mTrailersRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    private void commentsRecyclerViewSettings(){
+        ButterKnife.bind(this);
+        if (mCommentsArray != null && !mCommentsArray.isEmpty()){
+            CommentAdapter mCommentAdapter = new CommentAdapter(mCommentsArray, new CommentAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Comment comment) {
+                    Uri uri = Uri.parse(comment.getUrl());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
+
+                }
+            });
+
+            mCommentsRecyclerView.setAdapter(mCommentAdapter);
+
+            if (mCommentsArray.size() == 1){
+                mCommentsHeader.setText(R.string.comment);
+            }
+        }
+        if (mCommentsArray == null || mCommentsArray.size()==0){
+            mCommentsHeader.setVisibility(View.GONE);
+            mCommentsRecyclerView.setVisibility(View.GONE);
+        }
 
 
     }
