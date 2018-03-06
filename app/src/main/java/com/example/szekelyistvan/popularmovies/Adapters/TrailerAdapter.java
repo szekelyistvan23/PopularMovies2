@@ -40,6 +40,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     private List<Trailer> mTrailers;
     private OnItemClickListener mListener;
+    public static final String YOUTUBE_URL_FIRST_PART =  "https://img.youtube.com/vi/";
+    public static final String YOUTUBE_LINK_LAST_PART = "/mqdefault.jpg";
 
     public TrailerAdapter(List<Trailer> trailers, OnItemClickListener listener) {
         this.mTrailers = trailers;
@@ -61,7 +63,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     @Override
     public void onBindViewHolder(TrailerAdapter.TrailerViewHolder holder, final int position) {
         Picasso.with(holder.mTrailerImage.getContext())
-                .load(mTrailers.get(position).getKey())
+                .load(youtubeImageUrl(mTrailers.get(position).getKey()))
                 .placeholder(R.drawable.trailer_default)
                 .error(R.drawable.error185)
                 .into(holder.mTrailerImage);
@@ -89,5 +91,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+    /** Converts the youtube video id in a url for an image extracted from the video.*/
+    private String youtubeImageUrl (String youtubeId){
+        return YOUTUBE_URL_FIRST_PART + youtubeId + YOUTUBE_LINK_LAST_PART;
     }
 }
