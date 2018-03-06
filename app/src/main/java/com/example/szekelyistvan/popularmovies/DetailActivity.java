@@ -18,6 +18,8 @@ package com.example.szekelyistvan.popularmovies;
  * Displays data from an object received trough an intent.
  */
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -73,6 +75,8 @@ public class DetailActivity extends AppCompatActivity {
     ProgressBar mDetailProgressBar;
     @BindView(R.id.rv_videos)
     RecyclerView mTrailersRecyclerView;
+    @BindView(R.id.trailer_header)
+    TextView mTrailerHeader;
     private List<Comment> mCommentsArray;
     private List <Trailer> mTrailersArray;
     public static final String DETAIL_BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -89,8 +93,7 @@ public class DetailActivity extends AppCompatActivity {
     public static final String JSON_NAME = "name";
     public static final String JSON_TYPE = "type";
     public static final String JSON_TRAILER = "Trailer";
-    public static final String YOUTUBE_URL_FIRST_PART =  "https://img.youtube.com/vi/";
-    public static final String YOUTUBE_LINK_LAST_PART = "/mqdefault.jpg";
+    public static final String YOUTUBE_VIDEO_LINK = "https://m.youtube.com/watch?v=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,11 +182,23 @@ public class DetailActivity extends AppCompatActivity {
                             TrailerAdapter mAdapter = new TrailerAdapter(mTrailersArray, new TrailerAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(Trailer trailer) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setData(Uri.parse(YOUTUBE_VIDEO_LINK + trailer.getKey()));
 
+                                    if (intent.resolveActivity(getPackageManager()) != null) {
+                                        startActivity(intent);
+                                    }
                                 }
                             });
 
                             mTrailersRecyclerView.setAdapter(mAdapter);
+
+                            if (mTrailersArray.size() == 1){
+                                mTrailerHeader.setText(R.string.trailer);
+                            } else if (mTrailersArray.size() == 0){
+                                mTrailerHeader.setVisibility(View.GONE);
+                                mTrailersRecyclerView.setVisibility(View.GONE);
+                            }
                         }
 
                     }
@@ -243,19 +258,16 @@ public class DetailActivity extends AppCompatActivity {
             extractedTrailerData = jsonArray.getJSONObject(i);
 
             trailerResult.setId(extractedTrailerData.optString(JSON_ID));
-            trailerResult.setKey(youtubeImageUrl(extractedTrailerData.optString(JSON_KEY)));
+            trailerResult.setKey(extractedTrailerData.optString(JSON_KEY));
             trailerResult.setName(extractedTrailerData.optString(JSON_NAME));
             trailerResult.setType(extractedTrailerData.optString(JSON_TYPE));
 
-            if (trailerResult.getType().equals(JSON_TRAILER)) {
+//            if (trailerResult.getType().equals(JSON_TRAILER)) {
                 resultArray.add(trailerResult);
-            }
+//            }
             trailerResult = new Trailer();
         }
         return resultArray;
-    }
-    private String youtubeImageUrl (String youtubeId){
-        return YOUTUBE_URL_FIRST_PART + youtubeId + YOUTUBE_LINK_LAST_PART;
     }
 
     /** Sets up a RecyclerView for trailers. */
