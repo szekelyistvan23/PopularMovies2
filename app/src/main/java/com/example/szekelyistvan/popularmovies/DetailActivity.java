@@ -92,7 +92,6 @@ public class DetailActivity extends AppCompatActivity {
     public static final String JSON_KEY = "key";
     public static final String JSON_NAME = "name";
     public static final String JSON_TYPE = "type";
-    public static final String JSON_TRAILER = "Trailer";
     public static final String YOUTUBE_VIDEO_LINK = "https://m.youtube.com/watch?v=";
 
     @Override
@@ -262,9 +261,8 @@ public class DetailActivity extends AppCompatActivity {
             trailerResult.setName(extractedTrailerData.optString(JSON_NAME));
             trailerResult.setType(extractedTrailerData.optString(JSON_TYPE));
 
-//            if (trailerResult.getType().equals(JSON_TRAILER)) {
-                resultArray.add(trailerResult);
-//            }
+            resultArray.add(trailerResult);
+
             trailerResult = new Trailer();
         }
         return resultArray;
