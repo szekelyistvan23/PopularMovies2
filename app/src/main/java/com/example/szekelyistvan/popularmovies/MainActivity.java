@@ -131,6 +131,19 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new GridLayoutManager(this, autoSpan());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        mAdapter = new MovieAdapter(new ArrayList<Movie>(), new MovieAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Movie movie) {
+                Bundle args = new Bundle();
+                args.putParcelable(MOVIE_OBJECT, movie);
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                intent.putExtras(args);
+                startActivity(intent);
+            }
+        });
+
+        mRecyclerView.setAdapter(mAdapter);
+
 
     }
     /** Downloads JSON data from the Internet. */
@@ -151,17 +164,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (moviesArray != null && !moviesArray.isEmpty()){
-                            mAdapter = new MovieAdapter(moviesArray, new MovieAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(Movie movie) {
-                                    Bundle args = new Bundle();
-                                    args.putParcelable(MOVIE_OBJECT, movie);
-                                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                                    intent.putExtras(args);
-                                    startActivity(intent);
-                                }
-                            });
-                            mRecyclerView.setAdapter(mAdapter);
+                            mAdapter.changeMovieData(moviesArray);
                             mMainProgressBar.setVisibility(View.INVISIBLE);
                         }
                     }
