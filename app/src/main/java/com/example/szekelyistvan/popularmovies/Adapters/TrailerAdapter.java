@@ -81,6 +81,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         return mTrailers.size();
     }
 
+    public void changeTrailerData(List<Trailer> newTrailers) {
+        mTrailers = newTrailers;
+        notifyDataSetChanged();
+    }
+
     class TrailerViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.trailerImageView)
         ImageView mTrailerImage;

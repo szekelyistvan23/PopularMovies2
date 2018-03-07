@@ -84,6 +84,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView mCommentsHeader;
     private List<Comment> mCommentsArray;
     private List <Trailer> mTrailersArray;
+    private TrailerAdapter mTrailerAdapter;
     public static final String DETAIL_BASE_URL = "https://api.themoviedb.org/3/movie/";
     public static final String DETAIL_URL_LAST_PART = "?api_key=" + BuildConfig.API_KEY +
             "&language=en-US&page=1&append_to_response=reviews,videos&language=en-US";
@@ -262,6 +263,20 @@ public class DetailActivity extends AppCompatActivity {
         RecyclerView.LayoutManager trailerLayoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         mTrailersRecyclerView.setLayoutManager(trailerLayoutManager);
 
+        mTrailerAdapter = new TrailerAdapter(new ArrayList<Trailer>(), new TrailerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Trailer trailer) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(YOUTUBE_VIDEO_LINK + trailer.getKey()));
+
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
+
+        mTrailersRecyclerView.setAdapter(mTrailerAdapter);
+
         mCommentsRecyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager commentLayoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
@@ -271,19 +286,7 @@ public class DetailActivity extends AppCompatActivity {
     private void trailersRecyclerViewSettings(){
         ButterKnife.bind(this);
         if (mTrailersArray != null && !mTrailersArray.isEmpty()){
-            TrailerAdapter mTrailerAdapter = new TrailerAdapter(mTrailersArray, new TrailerAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(Trailer trailer) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(YOUTUBE_VIDEO_LINK + trailer.getKey()));
-
-                    if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(intent);
-                    }
-                }
-            });
-
-            mTrailersRecyclerView.setAdapter(mTrailerAdapter);
+            mTrailerAdapter.changeTrailerData(mTrailersArray);
 
             if (mTrailersArray.size() == 1){
                 mTrailerHeader.setText(R.string.trailer);
