@@ -20,6 +20,10 @@
         <activity android:name=".DetailActivity"
             android:parentActivityName=".MainActivity"
             />
+        <provider
+            android:authorities="com.example.szekelyistvan.popularmovies"
+            android:name="com.example.szekelyistvan.popularmovies.Utils.FavouritesContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

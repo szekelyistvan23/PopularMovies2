@@ -1,5 +1,6 @@
 package com.example.szekelyistvan.popularmovies.Utils;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -7,10 +8,16 @@ import android.provider.BaseColumns;
  */
 
 public class FavouritesContract {
-    public FavouritesContract() {
-    }
+
+    public static final String AUTHORITY = "com.example.szekelyistvan.popularmovies";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final String PATH_FAVOURITES = "favourites";
 
     public static final class FavouritesEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVOURITES).build();
+
         public static final String DB_NAME = "favourites.db";
         public static final int DB_VERSION = 1;
         public static final String TABLE_NAME = "favourites";
