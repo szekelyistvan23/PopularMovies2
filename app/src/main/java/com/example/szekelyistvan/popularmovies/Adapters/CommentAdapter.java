@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.szekelyistvan.popularmovies.Model.Comment;
+import com.example.szekelyistvan.popularmovies.model.Comment;
 import com.example.szekelyistvan.popularmovies.R;
 
 import java.util.List;

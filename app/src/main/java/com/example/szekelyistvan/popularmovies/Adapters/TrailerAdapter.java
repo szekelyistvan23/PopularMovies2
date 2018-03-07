@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.szekelyistvan.popularmovies.Model.Trailer;
+import com.example.szekelyistvan.popularmovies.model.Trailer;
 import com.example.szekelyistvan.popularmovies.R;
 import com.squareup.picasso.Picasso;
 

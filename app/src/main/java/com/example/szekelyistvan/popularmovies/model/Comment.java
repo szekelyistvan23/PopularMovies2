@@ -1,4 +1,4 @@
-package com.example.szekelyistvan.popularmovies.Model;
+package com.example.szekelyistvan.popularmovies.model;
 
 /**
  * Stores the comments made by the users of themoviedb.org

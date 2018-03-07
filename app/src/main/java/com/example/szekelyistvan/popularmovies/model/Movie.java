@@ -1,4 +1,4 @@
-package com.example.szekelyistvan.popularmovies.Model;
+package com.example.szekelyistvan.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

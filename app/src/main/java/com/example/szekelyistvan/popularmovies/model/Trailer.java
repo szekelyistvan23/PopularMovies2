@@ -1,4 +1,4 @@
-package com.example.szekelyistvan.popularmovies.Model;
+package com.example.szekelyistvan.popularmovies.model;
 
 /**
  * Stores the links to a movie's trailers on Youtube.

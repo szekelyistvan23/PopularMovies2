@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.szekelyistvan.popularmovies.Model.Movie;
+import com.example.szekelyistvan.popularmovies.model.Movie;
 import com.example.szekelyistvan.popularmovies.R;
 import com.squareup.picasso.Picasso;
 

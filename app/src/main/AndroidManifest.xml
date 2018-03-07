@@ -22,7 +22,7 @@
             />
         <provider
             android:authorities="com.example.szekelyistvan.popularmovies"
-            android:name="com.example.szekelyistvan.popularmovies.Utils.FavouritesContentProvider"
+            android:name="com.example.szekelyistvan.popularmovies.utils.FavouritesContentProvider"
             android:exported="false"/>
     </application>
 
