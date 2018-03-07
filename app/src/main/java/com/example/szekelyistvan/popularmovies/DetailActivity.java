@@ -85,6 +85,7 @@ public class DetailActivity extends AppCompatActivity {
     private List<Comment> mCommentsArray;
     private List <Trailer> mTrailersArray;
     private TrailerAdapter mTrailerAdapter;
+    private CommentAdapter mCommentAdapter;
     public static final String DETAIL_BASE_URL = "https://api.themoviedb.org/3/movie/";
     public static final String DETAIL_URL_LAST_PART = "?api_key=" + BuildConfig.API_KEY +
             "&language=en-US&page=1&append_to_response=reviews,videos&language=en-US";
@@ -281,6 +282,20 @@ public class DetailActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager commentLayoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         mCommentsRecyclerView.setLayoutManager(commentLayoutManager);
+
+        mCommentAdapter = new CommentAdapter(new ArrayList<Comment>(), new CommentAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Comment comment) {
+                Uri uri = Uri.parse(comment.getUrl());
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+
+            }
+        });
+
+        mCommentsRecyclerView.setAdapter(mCommentAdapter);
     }
 
     private void trailersRecyclerViewSettings(){
@@ -301,19 +316,7 @@ public class DetailActivity extends AppCompatActivity {
     private void commentsRecyclerViewSettings(){
         ButterKnife.bind(this);
         if (mCommentsArray != null && !mCommentsArray.isEmpty()){
-            CommentAdapter mCommentAdapter = new CommentAdapter(mCommentsArray, new CommentAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(Comment comment) {
-                    Uri uri = Uri.parse(comment.getUrl());
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(intent);
-                    }
-
-                }
-            });
-
-            mCommentsRecyclerView.setAdapter(mCommentAdapter);
+        mCommentAdapter.changeCommentData(mCommentsArray);
 
             if (mCommentsArray.size() == 1){
                 mCommentsHeader.setText(R.string.comment);

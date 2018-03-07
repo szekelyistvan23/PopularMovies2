@@ -73,6 +73,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         return mComments.size();
     }
 
+    public void changeCommentData(List<Comment> newComments) {
+        mComments = newComments;
+        notifyDataSetChanged();
+    }
+
     class CommentViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.comment_author)
         TextView mCommentAuthor;
