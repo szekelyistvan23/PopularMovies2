@@ -18,6 +18,7 @@ package com.example.szekelyistvan.popularmovies;
  * Displays data from an object received trough an intent.
  */
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBar;
@@ -40,9 +41,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.szekelyistvan.popularmovies.Adapters.CommentAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.TrailerAdapter;
-import com.example.szekelyistvan.popularmovies.Model.Comment;
-import com.example.szekelyistvan.popularmovies.Model.Movie;
-import com.example.szekelyistvan.popularmovies.Model.Trailer;
+import com.example.szekelyistvan.popularmovies.model.Comment;
+import com.example.szekelyistvan.popularmovies.model.Movie;
+import com.example.szekelyistvan.popularmovies.model.Trailer;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -55,6 +56,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_BACKDROP_PATH;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_ID;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_ORIGINAL_TITLE;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_OVERVIEW;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_POSTER_PATH;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_RELEASE_DATE;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_TITLE;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_VOTE_AVERAGE;
 
 public class DetailActivity extends AppCompatActivity {
     private Movie mMovieDetail;
@@ -82,6 +93,8 @@ public class DetailActivity extends AppCompatActivity {
     RecyclerView mCommentsRecyclerView;
     @BindView(R.id.comment_header)
     TextView mCommentsHeader;
+    @BindView(R.id.favouriteImage)
+    ImageView mFavouriteImage;
     private List<Comment> mCommentsArray;
     private List <Trailer> mTrailersArray;
     private TrailerAdapter mTrailerAdapter;
@@ -124,6 +137,7 @@ public class DetailActivity extends AppCompatActivity {
             setupActionBar();
             setUpAndLoadDataToUi();
             downloadCommentsTrailersData();
+            onClickManageFavourite();
 
 
     }
@@ -328,5 +342,34 @@ public class DetailActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void onClickManageFavourite (){
+        ButterKnife.bind(this);
+
+        final ContentValues contentValues = new ContentValues();
+
+        mFavouriteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                contentValues.put(FAVOURITES_COLUMN_ID, mMovieDetail.getId());
+                contentValues.put(FAVOURITES_COLUMN_VOTE_AVERAGE, mMovieDetail.getVoteAverage());
+                contentValues.put(FAVOURITES_COLUMN_TITLE, mMovieDetail.getTitle());
+                contentValues.put(FAVOURITES_COLUMN_POSTER_PATH, mMovieDetail.getPosterPath());
+                contentValues.put(FAVOURITES_COLUMN_ORIGINAL_TITLE, mMovieDetail.getOriginalTitle());
+                contentValues.put(FAVOURITES_COLUMN_BACKDROP_PATH, mMovieDetail.getBackdropPath());
+                contentValues.put(FAVOURITES_COLUMN_OVERVIEW, mMovieDetail.getOverview());
+                contentValues.put(FAVOURITES_COLUMN_RELEASE_DATE, mMovieDetail.getReleaseDate());
+
+                Uri uri = getContentResolver().insert(CONTENT_URI, contentValues);
+
+                if (uri != null ){
+                    mFavouriteImage.setImageResource(R.drawable.favourite);
+                    Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 }

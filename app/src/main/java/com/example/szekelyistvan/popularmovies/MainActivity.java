@@ -22,10 +22,16 @@ package com.example.szekelyistvan.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -45,7 +51,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
-import com.example.szekelyistvan.popularmovies.Model.Movie;
+import com.example.szekelyistvan.popularmovies.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,8 +66,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter.MOVIE_OBJECT;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_ID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     /** Put your own api key from themoviedb.org to gradle.properties in the following form
     API_KEY = "your api key goes here" */
@@ -332,4 +340,55 @@ public class MainActivity extends AppCompatActivity {
         }
         return stringBuilder.toString();
     }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new AsyncTaskLoader<Cursor>(this) {
+
+            Cursor mFavouritesData = null;
+
+            @Override
+            protected void onStartLoading() {
+                if (mFavouritesData != null) {
+                    deliverResult(mFavouritesData);
+                } else {
+                    forceLoad();
+                }
+            }
+
+            @Nullable
+            @Override
+            public Cursor loadInBackground() {
+                try {
+                    return getContentResolver().query(CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            null);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            public void deliverResult(@Nullable Cursor data) {
+                mFavouritesData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+//        mAdapter.changeMovieData(data);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        mAdapter.changeMovieData(null);
+    }
+
 }

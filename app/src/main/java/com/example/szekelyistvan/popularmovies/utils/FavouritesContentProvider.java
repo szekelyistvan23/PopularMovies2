@@ -1,18 +1,47 @@
+/**Copyright 2018 Szekely Istvan
+ *
+ *        Licensed under the Apache License, Version 2.0 (the "License");
+ *        you may not use this file except in compliance with the License.
+ *        You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *        Unless required by applicable law or agreed to in writing, software
+ *        distributed under the License is distributed on an "AS IS" BASIS,
+ *        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *        See the License for the specific language governing permissions and
+ *        limitations under the License
+ */
+
 package com.example.szekelyistvan.popularmovies.utils;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.example.szekelyistvan.popularmovies.R;
+
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.TABLE_NAME;
+
 /**
- * Created by Szekely Istvan on 07.03.2018.
+ * The implementation of the Content Provider is based on Udacity's To Do List app.
  */
 
 public class FavouritesContentProvider extends ContentProvider{
+
+
+    public static final int FAVOURITES = 200;
+    public static final int FAVOURITES_WITH_ID = 201;
+
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     private FavouritesDbHelper mFavouritesDbHelper;
 
@@ -28,7 +57,31 @@ public class FavouritesContentProvider extends ContentProvider{
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+
+        final SQLiteDatabase db = mFavouritesDbHelper.getReadableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        Cursor cursor;
+
+        switch (match){
+            case FAVOURITES:
+                cursor = db.query(TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+
+        return cursor;
     }
 
     @Nullable
@@ -39,8 +92,30 @@ public class FavouritesContentProvider extends ContentProvider{
 
     @Nullable
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values)
+    {
+        final SQLiteDatabase db = mFavouritesDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        Uri returnUri;
+
+        switch (match){
+            case FAVOURITES:
+                long id = db.insert(TABLE_NAME, null, values);
+                if (id > 0) {
+                    returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return returnUri;
     }
 
     @Override
@@ -51,5 +126,16 @@ public class FavouritesContentProvider extends ContentProvider{
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
+    }
+
+    public static UriMatcher buildUriMatcher (){
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+        uriMatcher.addURI(FavouritesContract.AUTHORITY, FavouritesContract.PATH_FAVOURITES, FAVOURITES);
+
+        uriMatcher.addURI(FavouritesContract.AUTHORITY, FavouritesContract.PATH_FAVOURITES + "/#", FAVOURITES_WITH_ID);
+
+
+        return uriMatcher;
     }
 }
