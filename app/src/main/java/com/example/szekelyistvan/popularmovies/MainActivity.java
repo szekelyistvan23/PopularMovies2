@@ -52,6 +52,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.model.Movie;
+import com.example.szekelyistvan.popularmovies.utils.AllFavouritesLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -366,41 +367,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return new AsyncTaskLoader<Cursor>(this) {
-
-            Cursor mFavouritesData = null;
-
-            @Override
-            protected void onStartLoading() {
-                if (mFavouritesData != null) {
-                    deliverResult(mFavouritesData);
-                } else {
-                    forceLoad();
-                }
-            }
-
-            @Nullable
-            @Override
-            public Cursor loadInBackground() {
-                try {
-                    return getContentResolver().query(CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            null);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            public void deliverResult(@Nullable Cursor data) {
-                mFavouritesData = data;
-                super.deliverResult(data);
-            }
-        };
+        return new AllFavouritesLoader(this);
     }
 
     @Override
