@@ -67,7 +67,14 @@ import butterknife.ButterKnife;
 
 import static com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter.MOVIE_OBJECT;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_BACKDROP_PATH;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_ID;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_ORIGINAL_TITLE;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_OVERVIEW;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_POSTER_PATH;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_RELEASE_DATE;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_TITLE;
+import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_VOTE_AVERAGE;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -90,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String JSON_REQUEST_BASE_URL = "https://api.themoviedb.org/3/movie";
     public static final String POPULAR = "popular";
     public static final String TOP_RATED = "top_rated";
+    public static final String FAVOURITE = "favourite";
     public static final String API_KEY_QUERY = "api_key";
     public static final String LANGUAGE_QUERY = "language";
     public static final String LANGUAGE_QUERY_VALUE = "en-US";
@@ -213,6 +221,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     showToast(getString(R.string.no_internet));
                 }
                 return true;
+            case R.id.sortFavourite:
+                    sortFavourite();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -270,6 +281,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             downloadData(defaultQuery);
             mAdapter.changeMovieData(moviesArray);
             setTitle(getString(R.string.highest_rated_title));
+        }
+    }
+
+    /** Displays the favourite movies' list. */
+    private void sortFavourite(){
+        if (defaultQuery.equals(FAVOURITE)) {
+            showToast(getString(R.string.already_popular));
+        } else {
+            defaultQuery = FAVOURITE;
+            getSupportLoaderManager().initLoader(22, null, this);
+            setTitle(getString(R.string.favourite_title));
         }
     }
 
@@ -383,7 +405,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-//        mAdapter.changeMovieData(data);
+
+        mAdapter.changeMovieData(cursorToArrayList(data));
     }
 
     @Override
@@ -391,4 +414,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter.changeMovieData(null);
     }
 
+    private List<Movie> cursorToArrayList (Cursor cursor){
+        List<Movie> resultArrayList = new ArrayList<>();
+            while (cursor.moveToNext()){
+                Integer id = cursor.getInt(cursor.getColumnIndex(FAVOURITES_COLUMN_ID));
+                Double voteAverage = cursor.getDouble(cursor.getColumnIndex(FAVOURITES_COLUMN_VOTE_AVERAGE));
+                String title = cursor.getString(cursor.getColumnIndex(FAVOURITES_COLUMN_TITLE));
+                String posterPath = cursor.getString(cursor.getColumnIndex(FAVOURITES_COLUMN_POSTER_PATH));
+                String originalTitle = cursor.getString(cursor.getColumnIndex(FAVOURITES_COLUMN_ORIGINAL_TITLE));
+                String backdropPath = cursor.getString(cursor.getColumnIndex(FAVOURITES_COLUMN_BACKDROP_PATH));
+                String overview = cursor.getString(cursor.getColumnIndex(FAVOURITES_COLUMN_OVERVIEW));
+                String releaseDate = cursor.getString(cursor.getColumnIndex(FAVOURITES_COLUMN_RELEASE_DATE));
+
+                resultArrayList.add(new Movie(id, voteAverage, title, posterPath, originalTitle, backdropPath, overview,releaseDate));
+            }
+        return resultArrayList;
+    }
 }
