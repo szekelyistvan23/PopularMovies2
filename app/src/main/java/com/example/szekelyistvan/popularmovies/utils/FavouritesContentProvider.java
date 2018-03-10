@@ -141,6 +141,13 @@ public class FavouritesContentProvider extends ContentProvider{
         int favouritesDeleted;
 
         switch (match) {
+
+            case FAVOURITES:
+                favouritesDeleted = db.delete(TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+
             case FAVOURITES_WITH_ID:
                 String id = uri.getPathSegments().get(1);
                 favouritesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});

@@ -408,7 +408,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                     };
 
                     Bundle bundle = loaderArgumentsToBundle();
-                    getSupportLoaderManager().initLoader(DELETE_LOADER_ID, bundle, DetailActivity.this).forceLoad();
+                    getSupportLoaderManager().initLoader(DELETE_LOADER_ID, bundle, deleteFavourite);
                 }
             }
         });

@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_favourite));
         } else {
             defaultQuery = FAVOURITE;
-            getSupportLoaderManager().initLoader(22, null, this);
+            getSupportLoaderManager().initLoader(22, null, this).forceLoad();
             setTitle(getString(R.string.favourite_title));
         }
     }
