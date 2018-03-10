@@ -9,8 +9,20 @@ import android.os.Parcelable;
 
 public class LoaderArguments implements Parcelable {
     private String mSelection;
-    private String [] mSelectionArgs;
+    private String[] mSelectionArgs;
 
+    public LoaderArguments(String selection, String[] selectionArgs) {
+        mSelection = selection;
+        mSelectionArgs = selectionArgs;
+    }
+
+    public String getSelection() {
+        return mSelection;
+    }
+
+    public String[] getSelectionArgs() {
+        return mSelectionArgs;
+    }
 
     @Override
     public int describeContents() {
@@ -21,9 +33,6 @@ public class LoaderArguments implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mSelection);
         dest.writeStringArray(this.mSelectionArgs);
-    }
-
-    public LoaderArguments() {
     }
 
     protected LoaderArguments(Parcel in) {
