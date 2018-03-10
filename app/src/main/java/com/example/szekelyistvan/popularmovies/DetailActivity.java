@@ -50,6 +50,7 @@ import com.example.szekelyistvan.popularmovies.model.Comment;
 import com.example.szekelyistvan.popularmovies.model.LoaderArguments;
 import com.example.szekelyistvan.popularmovies.model.Movie;
 import com.example.szekelyistvan.popularmovies.model.Trailer;
+import com.example.szekelyistvan.popularmovies.utils.DeleteLoader;
 import com.example.szekelyistvan.popularmovies.utils.FavouriteLoader;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -111,6 +112,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public static final String DETAIL_URL_LAST_PART = "?api_key=" + BuildConfig.API_KEY +
             "&language=en-US&page=1&append_to_response=reviews,videos&language=en-US";
     public static final int QUERY_LOADER_ID = 11;
+    public static final int DELETE_LOADER_ID = 33;
     public static final String LOADER_ARGUMENTS = "args";
     public static final String JSON_REVIEWS = "reviews";
     public static final String JSON_VIDEOS = "videos";
@@ -365,33 +367,55 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             @Override
             public void onClick(View v) {
 
-                contentValues.put(FAVOURITES_COLUMN_ID, mMovieDetail.getId());
-                contentValues.put(FAVOURITES_COLUMN_VOTE_AVERAGE, mMovieDetail.getVoteAverage());
-                contentValues.put(FAVOURITES_COLUMN_TITLE, mMovieDetail.getTitle());
-                contentValues.put(FAVOURITES_COLUMN_POSTER_PATH, mMovieDetail.getPosterPath());
-                contentValues.put(FAVOURITES_COLUMN_ORIGINAL_TITLE, mMovieDetail.getOriginalTitle());
-                contentValues.put(FAVOURITES_COLUMN_BACKDROP_PATH, mMovieDetail.getBackdropPath());
-                contentValues.put(FAVOURITES_COLUMN_OVERVIEW, mMovieDetail.getOverview());
-                contentValues.put(FAVOURITES_COLUMN_RELEASE_DATE, mMovieDetail.getReleaseDate());
 
-                Uri uri = getContentResolver().insert(CONTENT_URI, contentValues);
+                if (!mFavorite) {
+                    contentValues.put(FAVOURITES_COLUMN_ID, mMovieDetail.getId());
+                    contentValues.put(FAVOURITES_COLUMN_VOTE_AVERAGE, mMovieDetail.getVoteAverage());
+                    contentValues.put(FAVOURITES_COLUMN_TITLE, mMovieDetail.getTitle());
+                    contentValues.put(FAVOURITES_COLUMN_POSTER_PATH, mMovieDetail.getPosterPath());
+                    contentValues.put(FAVOURITES_COLUMN_ORIGINAL_TITLE, mMovieDetail.getOriginalTitle());
+                    contentValues.put(FAVOURITES_COLUMN_BACKDROP_PATH, mMovieDetail.getBackdropPath());
+                    contentValues.put(FAVOURITES_COLUMN_OVERVIEW, mMovieDetail.getOverview());
+                    contentValues.put(FAVOURITES_COLUMN_RELEASE_DATE, mMovieDetail.getReleaseDate());
 
-                if (uri != null ){
-                    mFavouriteImage.setImageResource(R.drawable.favourite);
-                    Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+                    Uri uri = getContentResolver().insert(CONTENT_URI, contentValues);
+
+                    if (uri != null) {
+                        mFavouriteImage.setImageResource(R.drawable.favourite);
+                        mFavorite = true;
+                        Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    LoaderManager.LoaderCallbacks<Integer> deleteFavourite = new LoaderManager.LoaderCallbacks<Integer>() {
+                        @NonNull
+                        @Override
+                        public Loader<Integer> onCreateLoader(int id, @Nullable Bundle args) {
+                            return new DeleteLoader(DetailActivity.this, args);
+                        }
+
+                        @Override
+                        public void onLoadFinished(@NonNull Loader<Integer> loader, Integer data) {
+                            if (data > 0) {
+                                mFavouriteImage.setImageResource(R.drawable.not_favourite);
+                                mFavorite = false;
+                            }
+                        }
+
+                        @Override
+                        public void onLoaderReset(@NonNull Loader<Integer> loader) {
+
+                        }
+                    };
+
+                    Bundle bundle = loaderArgumentsToBundle();
+                    getSupportLoaderManager().initLoader(DELETE_LOADER_ID, bundle, DetailActivity.this).forceLoad();
                 }
-
             }
         });
     }
 
     private void queryFavouriteState(){
-        Bundle bundle = new Bundle();
-        String [] loaderSelectionArgs  = {mMovieDetail.getId().toString()};
-
-        LoaderArguments loaderArguments = new LoaderArguments(LOADER_SELECTION, loaderSelectionArgs);
-        bundle.putParcelable(LOADER_ARGUMENTS, loaderArguments);
-
+        Bundle bundle = loaderArgumentsToBundle();
         getSupportLoaderManager().initLoader(QUERY_LOADER_ID, bundle, this);
 
     }
@@ -419,4 +443,15 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
+
+    private Bundle loaderArgumentsToBundle(){
+        Bundle bundle = new Bundle();
+        String [] loaderSelectionArgs  = {mMovieDetail.getId().toString()};
+
+        LoaderArguments loaderArguments = new LoaderArguments(LOADER_SELECTION, loaderSelectionArgs);
+        bundle.putParcelable(LOADER_ARGUMENTS, loaderArguments);
+
+        return bundle;
+    }
+
 }

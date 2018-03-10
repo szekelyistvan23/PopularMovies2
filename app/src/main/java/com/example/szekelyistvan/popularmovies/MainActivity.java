@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /** Displays the favourite movies' list. */
     private void sortFavourite(){
         if (defaultQuery.equals(FAVOURITE)) {
-            showToast(getString(R.string.already_popular));
+            showToast(getString(R.string.already_favourite));
         } else {
             defaultQuery = FAVOURITE;
             getSupportLoaderManager().initLoader(22, null, this);
