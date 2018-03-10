@@ -74,6 +74,21 @@ public class FavouritesContentProvider extends ContentProvider{
                         null,
                         sortOrder);
                 break;
+
+            case FAVOURITES_WITH_ID:
+
+                String id = uri.getPathSegments().get(1);
+                String mSelection = "id=?";
+                String[] mSelectionArgs = new String[] {id};
+
+                cursor = db.query(TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -87,7 +102,7 @@ public class FavouritesContentProvider extends ContentProvider{
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     @Nullable
@@ -120,12 +135,30 @@ public class FavouritesContentProvider extends ContentProvider{
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mFavouritesDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        int favouritesDeleted;
+
+        switch (match) {
+            case FAVOURITES_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                favouritesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (favouritesDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return favouritesDeleted;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     public static UriMatcher buildUriMatcher (){
