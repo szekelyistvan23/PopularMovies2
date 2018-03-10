@@ -20,7 +20,12 @@ package com.example.szekelyistvan.popularmovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,8 +47,10 @@ import com.example.szekelyistvan.popularmovies.Adapters.CommentAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.TrailerAdapter;
 import com.example.szekelyistvan.popularmovies.model.Comment;
+import com.example.szekelyistvan.popularmovies.model.LoaderArguments;
 import com.example.szekelyistvan.popularmovies.model.Movie;
 import com.example.szekelyistvan.popularmovies.model.Trailer;
+import com.example.szekelyistvan.popularmovies.utils.FavouriteLoader;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -67,7 +74,7 @@ import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.F
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_TITLE;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_VOTE_AVERAGE;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
     private Movie mMovieDetail;
     @BindView(R.id.user_rating)
     TextView mVoteAverage;
@@ -99,9 +106,12 @@ public class DetailActivity extends AppCompatActivity {
     private List <Trailer> mTrailersArray;
     private TrailerAdapter mTrailerAdapter;
     private CommentAdapter mCommentAdapter;
+    private boolean mFavorite;
     public static final String DETAIL_BASE_URL = "https://api.themoviedb.org/3/movie/";
     public static final String DETAIL_URL_LAST_PART = "?api_key=" + BuildConfig.API_KEY +
             "&language=en-US&page=1&append_to_response=reviews,videos&language=en-US";
+    public static final int QUERY_LOADER_ID = 11;
+    public static final String LOADER_ARGUMENTS = "args";
     public static final String JSON_REVIEWS = "reviews";
     public static final String JSON_VIDEOS = "videos";
     public static final String JSON_RESULTS = "results";
@@ -113,6 +123,7 @@ public class DetailActivity extends AppCompatActivity {
     public static final String JSON_NAME = "name";
     public static final String JSON_TYPE = "type";
     public static final String YOUTUBE_VIDEO_LINK = "https://m.youtube.com/watch?v=";
+    public static final String LOADER_SELECTION = "MOVIE_ID=?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +148,7 @@ public class DetailActivity extends AppCompatActivity {
             setupActionBar();
             setUpAndLoadDataToUi();
             downloadCommentsTrailersData();
+            queryFavouriteState();
             onClickManageFavourite();
 
 
@@ -371,5 +383,40 @@ public class DetailActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void queryFavouriteState(){
+        Bundle bundle = new Bundle();
+        String [] loaderSelectionArgs  = {mMovieDetail.getId().toString()};
+
+        LoaderArguments loaderArguments = new LoaderArguments(LOADER_SELECTION, loaderSelectionArgs);
+        bundle.putParcelable(LOADER_ARGUMENTS, loaderArguments);
+
+        getSupportLoaderManager().initLoader(QUERY_LOADER_ID, bundle, this);
+
+    }
+
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new FavouriteLoader(this, args);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.getCount() > 0){
+            mFavouriteImage.setImageResource(R.drawable.favourite);
+            mFavorite = true;
+        } else {
+            mFavouriteImage.setImageResource(R.drawable.not_favourite);
+            mFavorite = false;
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
     }
 }
