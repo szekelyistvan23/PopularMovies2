@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private @MovieListType String defaultQuery;
     private Toast sortToast;
 
+
     @StringDef({POPULAR, TOP_RATED, FAVOURITE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MovieListType {
@@ -178,14 +179,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         public void onResponse(String response) {
                             try {
                                 moviesArray = jsonToMovieArray(response);
+                                mAdapter.changeMovieData(moviesArray);
+                                mMainProgressBar.setVisibility(View.INVISIBLE);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            if (moviesArray != null && !moviesArray.isEmpty()) {
-                                mAdapter.changeMovieData(moviesArray);
-                                mMainProgressBar.setVisibility(View.INVISIBLE);
-                            }
+//                            if (moviesArray != null && !moviesArray.isEmpty()) {
+//                                mAdapter.changeMovieData(moviesArray);
+//                                mMainProgressBar.setVisibility(View.INVISIBLE);
+//                            }
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -196,10 +199,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             });
 
             queue.add(stringRequest);
-        }
-
-        if (query.equals(FAVOURITE)) {
-            getSupportLoaderManager().restartLoader(22, null, this).forceLoad();
+        } else {
+            getSupportLoaderManager().initLoader(22, null, this);
             mMainProgressBar.setVisibility(View.INVISIBLE);
             setTitle(getString(R.string.favourite_title));
         }
@@ -389,8 +390,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        mAdapter.changeMovieData(cursorToArrayList(data));
-        moviesArray = cursorToArrayList(data);
+        if (data != null && defaultQuery.equals(FAVOURITE)) {
+            mAdapter.changeMovieData(cursorToArrayList(data));
+        }
     }
 
     @Override

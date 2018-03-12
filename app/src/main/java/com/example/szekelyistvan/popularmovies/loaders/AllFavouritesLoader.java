@@ -12,19 +12,13 @@ import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.F
 
 public class AllFavouritesLoader extends AsyncTaskLoader<Cursor>{
 
-    private Cursor mFavouritesData = null;
-
     public AllFavouritesLoader(Context context) {
         super(context);
     }
 
     @Override
     protected void onStartLoading() {
-        if (mFavouritesData != null) {
-            deliverResult(mFavouritesData);
-        } else {
             forceLoad();
-        }
     }
 
     @Override
@@ -44,7 +38,6 @@ public class AllFavouritesLoader extends AsyncTaskLoader<Cursor>{
 
     @Override
     public void deliverResult(Cursor data) {
-        mFavouritesData = data;
         super.deliverResult(data);
     }
 }
