@@ -49,7 +49,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
+import com.example.szekelyistvan.popularmovies.adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.model.Movie;
 import com.example.szekelyistvan.popularmovies.loaders.AllFavouritesLoader;
 
@@ -65,7 +65,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter.MOVIE_OBJECT;
+import static com.example.szekelyistvan.popularmovies.adapters.MovieAdapter.MOVIE_OBJECT;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_BACKDROP_PATH;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_ID;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.FAVOURITES_COLUMN_ORIGINAL_TITLE;

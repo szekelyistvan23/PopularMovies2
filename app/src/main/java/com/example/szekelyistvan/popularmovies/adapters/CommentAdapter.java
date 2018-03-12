@@ -13,7 +13,7 @@
  *        limitations under the License
  */
 
-package com.example.szekelyistvan.popularmovies.Adapters;
+package com.example.szekelyistvan.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
