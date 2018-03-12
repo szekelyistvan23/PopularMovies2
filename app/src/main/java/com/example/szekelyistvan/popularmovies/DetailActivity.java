@@ -298,7 +298,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         RecyclerView.LayoutManager trailerLayoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         mTrailersRecyclerView.setLayoutManager(trailerLayoutManager);
-
+//      Based on: https://antonioleiva.com/recyclerview-listener/
         mTrailerAdapter = new TrailerAdapter(new ArrayList<Trailer>(), new TrailerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Trailer trailer) {
@@ -319,7 +319,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         RecyclerView.LayoutManager commentLayoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         mCommentsRecyclerView.setLayoutManager(commentLayoutManager);
-
+//      Based on: https://antonioleiva.com/recyclerview-listener/
         mCommentAdapter = new CommentAdapter(new ArrayList<Comment>(), new CommentAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Comment comment) {

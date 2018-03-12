@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mLayoutManager = new GridLayoutManager(this, autoSpan());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
+//        Based on: https://antonioleiva.com/recyclerview-listener/
         mAdapter = new MovieAdapter(new ArrayList<Movie>(), new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Movie movie) {
