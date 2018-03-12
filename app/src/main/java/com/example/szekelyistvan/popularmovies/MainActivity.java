@@ -21,6 +21,7 @@ package com.example.szekelyistvan.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -127,22 +128,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null){
-            /** Retrieve saved data after screen rotation */
-            defaultQuery = savedInstanceState.getString("default_query");
-            setTitle(savedInstanceState.getString("title"));
-
-            /** Retrieve saved data after DetailActivity closed. */
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                defaultQuery = extras.getString("default_query");
-                setTitle(extras.getString("title"));
-            }
-
-        } else {
-            defaultQuery = POPULAR;
-        }
-
+        readSharedPreferences();
         setupRecyclerView();
         if (haveNetworkConnection()) {
             downloadData(defaultQuery);
@@ -165,10 +151,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter = new MovieAdapter(new ArrayList<Movie>(), new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Movie movie) {
+                saveSharedPreferences();
                 Bundle args = new Bundle();
                 args.putParcelable(MOVIE_OBJECT, movie);
-                args.putString("default_query", defaultQuery);
-                args.putString("title", getTitle().toString());
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtras(args);
                 startActivity(intent);
@@ -422,10 +407,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        /** Save data before screen rotation */
-            outState.putString("default_query", defaultQuery);
-            outState.putString("title", getTitle().toString());
+            saveSharedPreferences();
+    }
+    /** Saves data to shared preferences */
+    private void saveSharedPreferences(){
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("default_query", defaultQuery);
+        editor.putString("title", getTitle().toString());
+        editor.apply();
+    }
 
-
+    /** Reads data from shared preferences */
+    private void readSharedPreferences(){
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        defaultQuery = sharedPreferences.getString("default_query", POPULAR);
+        setTitle(sharedPreferences.getString("title", getString(R.string.popular_movies_title)));
     }
 }
