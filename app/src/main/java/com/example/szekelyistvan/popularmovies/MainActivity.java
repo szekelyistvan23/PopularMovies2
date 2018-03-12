@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private @MovieListType String defaultQuery;
     private Toast sortToast;
 
-    @StringDef({POPULAR, TOP_RATED})
+    @StringDef({POPULAR, TOP_RATED, FAVOURITE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MovieListType {
     }
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         readSharedPreferences();
         setupRecyclerView();
         if (haveNetworkConnection()) {
-            downloadData(defaultQuery);
+                downloadData(defaultQuery);
         } else {
             finish();
             showToast(getString(R.string.no_internet));
@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter = new MovieAdapter(new ArrayList<Movie>(), new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Movie movie) {
-                saveSharedPreferences();
                 Bundle args = new Bundle();
                 args.putParcelable(MOVIE_OBJECT, movie);
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
@@ -167,35 +166,43 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /** Downloads JSON data from the Internet. */
     private void downloadData(@MovieListType String query){
         ButterKnife.bind(this);
-        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        if (query.equals(POPULAR) || query.equals(TOP_RATED)) {
 
-        String url = buildStringForRequest(query);
+            RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            moviesArray = jsonToMovieArray(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+            String url = buildStringForRequest(query);
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                moviesArray = jsonToMovieArray(response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (moviesArray != null && !moviesArray.isEmpty()) {
+                                mAdapter.changeMovieData(moviesArray);
+                                mMainProgressBar.setVisibility(View.INVISIBLE);
+                            }
                         }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    finish();
+                    Toast.makeText(MainActivity.this, R.string.wrong, Toast.LENGTH_SHORT).show();
+                }
+            });
 
-                        if (moviesArray != null && !moviesArray.isEmpty()){
-                            mAdapter.changeMovieData(moviesArray);
-                            mMainProgressBar.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                finish();
-                Toast.makeText(MainActivity.this, R.string.wrong, Toast.LENGTH_SHORT).show();
-            }
-        });
+            queue.add(stringRequest);
+        }
 
-        queue.add(stringRequest);
-
+        if (query.equals(FAVOURITE)) {
+            getSupportLoaderManager().restartLoader(22, null, this).forceLoad();
+            mMainProgressBar.setVisibility(View.INVISIBLE);
+            setTitle(getString(R.string.favourite_title));
+        }
     }
     /** Loads the custom menu. */
     @Override
@@ -268,11 +275,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_popular));
         } else {
             defaultQuery = POPULAR;
+            setTitle(getString(R.string.popular_movies_title));
+            saveSharedPreferences();
             mMainProgressBar.setVisibility(View.VISIBLE);
             mLayoutManager.scrollToPosition(0);
             downloadData(defaultQuery);
-            mAdapter.changeMovieData(moviesArray);
-            setTitle(getString(R.string.popular_movies_title));
         }
     }
 
@@ -282,11 +289,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_top));
         } else {
             defaultQuery = TOP_RATED;
+            setTitle(getString(R.string.highest_rated_title));
+            saveSharedPreferences();
             mMainProgressBar.setVisibility(View.VISIBLE);
             mLayoutManager.scrollToPosition(0);
             downloadData(defaultQuery);
-            mAdapter.changeMovieData(moviesArray);
-            setTitle(getString(R.string.highest_rated_title));
         }
     }
 
@@ -296,10 +303,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_favourite));
         } else {
             defaultQuery = FAVOURITE;
-            mMainProgressBar.setVisibility(View.VISIBLE);
-            getSupportLoaderManager().initLoader(22, null, this).forceLoad();
-            mMainProgressBar.setVisibility(View.INVISIBLE);
             setTitle(getString(R.string.favourite_title));
+            saveSharedPreferences();
+            mMainProgressBar.setVisibility(View.VISIBLE);
+            mLayoutManager.scrollToPosition(0);
+            downloadData(defaultQuery);
+
+
         }
     }
 
@@ -379,8 +389,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-
         mAdapter.changeMovieData(cursorToArrayList(data));
+        moviesArray = cursorToArrayList(data);
     }
 
     @Override

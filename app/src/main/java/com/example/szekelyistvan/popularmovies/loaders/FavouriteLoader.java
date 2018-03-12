@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.example.szekelyistvan.popularmovies.loaders.LoaderArguments;
+import com.example.szekelyistvan.popularmovies.model.LoaderArguments;
 
 import static com.example.szekelyistvan.popularmovies.DetailActivity.LOADER_ARGUMENTS;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;

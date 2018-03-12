@@ -4,6 +4,8 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.example.szekelyistvan.popularmovies.model.LoaderArguments;
+
 import static com.example.szekelyistvan.popularmovies.DetailActivity.LOADER_ARGUMENTS;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
 

@@ -47,7 +47,7 @@ import com.example.szekelyistvan.popularmovies.adapters.CommentAdapter;
 import com.example.szekelyistvan.popularmovies.adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.adapters.TrailerAdapter;
 import com.example.szekelyistvan.popularmovies.model.Comment;
-import com.example.szekelyistvan.popularmovies.loaders.LoaderArguments;
+import com.example.szekelyistvan.popularmovies.model.LoaderArguments;
 import com.example.szekelyistvan.popularmovies.model.Movie;
 import com.example.szekelyistvan.popularmovies.model.Trailer;
 import com.example.szekelyistvan.popularmovies.loaders.DeleteLoader;
