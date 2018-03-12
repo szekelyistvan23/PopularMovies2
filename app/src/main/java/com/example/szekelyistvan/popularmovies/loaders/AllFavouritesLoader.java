@@ -1,4 +1,4 @@
-package com.example.szekelyistvan.popularmovies.utils;
+package com.example.szekelyistvan.popularmovies.loaders;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
@@ -36,7 +36,7 @@ public class AllFavouritesLoader extends AsyncTaskLoader<Cursor>{
                     null,
                     null);
 
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return null;
         }

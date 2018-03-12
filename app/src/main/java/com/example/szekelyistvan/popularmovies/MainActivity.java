@@ -51,7 +51,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.model.Movie;
-import com.example.szekelyistvan.popularmovies.utils.AllFavouritesLoader;
+import com.example.szekelyistvan.popularmovies.loaders.AllFavouritesLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private MovieAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Movie> moviesArray;
-    private @MovieListType String defaultQuery =POPULAR;
+    private @MovieListType String defaultQuery;
     private Toast sortToast;
 
     @StringDef({POPULAR, TOP_RATED})
@@ -126,6 +126,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState != null){
+            /** Retrieve saved data after screen rotation */
+            defaultQuery = savedInstanceState.getString("default_query");
+            setTitle(savedInstanceState.getString("title"));
+
+            /** Retrieve saved data after DetailActivity closed. */
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                defaultQuery = extras.getString("default_query");
+                setTitle(extras.getString("title"));
+            }
+
+        } else {
+            defaultQuery = POPULAR;
+        }
 
         setupRecyclerView();
         if (haveNetworkConnection()) {
@@ -151,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onItemClick(Movie movie) {
                 Bundle args = new Bundle();
                 args.putParcelable(MOVIE_OBJECT, movie);
+                args.putString("default_query", defaultQuery);
+                args.putString("title", getTitle().toString());
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtras(args);
                 startActivity(intent);
@@ -265,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_popular));
         } else {
             defaultQuery = POPULAR;
+            mLayoutManager.scrollToPosition(0);
             downloadData(defaultQuery);
             mAdapter.changeMovieData(moviesArray);
             setTitle(getString(R.string.popular_movies_title));
@@ -277,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_top));
         } else {
             defaultQuery = TOP_RATED;
+            mLayoutManager.scrollToPosition(0);
             downloadData(defaultQuery);
             mAdapter.changeMovieData(moviesArray);
             setTitle(getString(R.string.highest_rated_title));
@@ -376,7 +396,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mAdapter.changeMovieData(null);
     }
 
     private List<Movie> cursorToArrayList (Cursor cursor){
@@ -394,5 +413,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 resultArrayList.add(new Movie(id, voteAverage, title, posterPath, originalTitle, backdropPath, overview,releaseDate));
             }
         return resultArrayList;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        /** Save data before screen rotation */
+            outState.putString("default_query", defaultQuery);
+            outState.putString("title", getTitle().toString());
+
+
     }
 }

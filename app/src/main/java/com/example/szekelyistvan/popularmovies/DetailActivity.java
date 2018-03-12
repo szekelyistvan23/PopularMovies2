@@ -47,10 +47,10 @@ import com.example.szekelyistvan.popularmovies.Adapters.CommentAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.MovieAdapter;
 import com.example.szekelyistvan.popularmovies.Adapters.TrailerAdapter;
 import com.example.szekelyistvan.popularmovies.model.Comment;
-import com.example.szekelyistvan.popularmovies.model.LoaderArguments;
+import com.example.szekelyistvan.popularmovies.loaders.LoaderArguments;
 import com.example.szekelyistvan.popularmovies.model.Movie;
 import com.example.szekelyistvan.popularmovies.model.Trailer;
-import com.example.szekelyistvan.popularmovies.utils.DeleteLoader;
+import com.example.szekelyistvan.popularmovies.loaders.DeleteLoader;
 import com.example.szekelyistvan.popularmovies.utils.FavouriteLoader;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -143,7 +143,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                 mMovieDetail = extras.getParcelable(MovieAdapter.MOVIE_OBJECT);
             } else {
                 finish();
-                Toast.makeText(DetailActivity.this, "No data available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DetailActivity.this, R.string.no_data, Toast.LENGTH_SHORT).show();
             }
 
             setupRecyclerViews();

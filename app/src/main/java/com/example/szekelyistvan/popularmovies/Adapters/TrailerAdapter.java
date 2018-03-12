@@ -65,7 +65,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         Picasso.with(holder.mTrailerImage.getContext())
                 .load(youtubeImageUrl(mTrailers.get(position).getKey()))
                 .placeholder(R.drawable.trailer_default)
-                .error(R.drawable.error185)
+                .error(R.drawable.trailer_default_error)
                 .into(holder.mTrailerImage);
         holder.mTrailerName.setText(mTrailers.get(position).getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
