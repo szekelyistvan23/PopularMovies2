@@ -10,7 +10,7 @@ import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.F
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.TABLE_NAME;
 
 /**
- * Created by Szekely Istvan on 07.03.2018.
+ * Database Helper class.
  */
 
 public class FavouritesDbHelper extends SQLiteOpenHelper{

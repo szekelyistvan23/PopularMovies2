@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Created by Szekely Istvan on 07.03.2018.
+ * This a contract used by a DbHelper and a COntentProvider.
  */
 
 public class FavouritesContract {
