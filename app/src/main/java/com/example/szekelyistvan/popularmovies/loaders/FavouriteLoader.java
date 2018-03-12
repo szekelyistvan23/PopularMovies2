@@ -19,7 +19,7 @@ import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.F
 public class FavouriteLoader extends AsyncTaskLoader<Cursor> {
 
     private Bundle mArguments;
-    private Cursor mFavouriteData = null;
+//    private Cursor mFavouriteData = null;
 
     public FavouriteLoader(@NonNull Context context, Bundle args) {
         super(context);
@@ -28,11 +28,11 @@ public class FavouriteLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     protected void onStartLoading() {
-        if (mFavouriteData != null) {
-            deliverResult(mFavouriteData);
-        } else {
+//        if (mFavouriteData != null) {
+//            deliverResult(mFavouriteData);
+//        } else {
             forceLoad();
-        }
+//        }
     }
 
     @Nullable
@@ -56,7 +56,7 @@ public class FavouriteLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     public void deliverResult(@Nullable Cursor data) {
-        mFavouriteData = data;
+//        mFavouriteData = data;
         super.deliverResult(data);
     }
 }

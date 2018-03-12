@@ -40,6 +40,10 @@ public class FavouritesContentProvider extends ContentProvider{
 
     public static final int FAVOURITES = 200;
     public static final int FAVOURITES_WITH_ID = 201;
+    public static final int DATA_PART = 1;
+    public static final String SELECTION = "_id=?";
+    public static final String NUMBER_OF_ROW = "/#";
+    public static final int UNSUCCESSFUL_DELETE = 0;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -77,8 +81,8 @@ public class FavouritesContentProvider extends ContentProvider{
 
             case FAVOURITES_WITH_ID:
 
-                String id = uri.getPathSegments().get(1);
-                String mSelection = "id=?";
+                String id = uri.getPathSegments().get(DATA_PART);
+                String mSelection = SELECTION;
                 String[] mSelectionArgs = new String[] {id};
 
                 cursor = db.query(TABLE_NAME,
@@ -90,7 +94,7 @@ public class FavouritesContentProvider extends ContentProvider{
                         sortOrder);
 
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -102,7 +106,7 @@ public class FavouritesContentProvider extends ContentProvider{
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        throw new UnsupportedOperationException("Not yet implemented!");
+        throw new UnsupportedOperationException(getContext().getString(R.string.not_yet));
     }
 
     @Nullable
@@ -121,11 +125,11 @@ public class FavouritesContentProvider extends ContentProvider{
                 if (id > 0) {
                     returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
                 } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                    throw new android.database.SQLException(getContext().getString(R.string.failed_insert) + uri);
                 }
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
@@ -150,13 +154,13 @@ public class FavouritesContentProvider extends ContentProvider{
 
             case FAVOURITES_WITH_ID:
                 String id = uri.getPathSegments().get(1);
-                favouritesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                favouritesDeleted = db.delete(TABLE_NAME, SELECTION, new String[]{id});
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_uri) + uri);
         }
 
-        if (favouritesDeleted != 0) {
+        if (favouritesDeleted != UNSUCCESSFUL_DELETE) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
@@ -165,7 +169,7 @@ public class FavouritesContentProvider extends ContentProvider{
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        throw new UnsupportedOperationException("Not yet implemented!");
+        throw new UnsupportedOperationException(getContext().getString(R.string.not_yet));
     }
 
     public static UriMatcher buildUriMatcher (){
@@ -173,7 +177,7 @@ public class FavouritesContentProvider extends ContentProvider{
 
         uriMatcher.addURI(FavouritesContract.AUTHORITY, FavouritesContract.PATH_FAVOURITES, FAVOURITES);
 
-        uriMatcher.addURI(FavouritesContract.AUTHORITY, FavouritesContract.PATH_FAVOURITES + "/#", FAVOURITES_WITH_ID);
+        uriMatcher.addURI(FavouritesContract.AUTHORITY, FavouritesContract.PATH_FAVOURITES + NUMBER_OF_ROW, FAVOURITES_WITH_ID);
 
 
         return uriMatcher;

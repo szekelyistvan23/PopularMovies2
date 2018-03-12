@@ -22,6 +22,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -113,6 +114,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             "&language=en-US&page=1&append_to_response=reviews,videos&language=en-US";
     public static final int QUERY_LOADER_ID = 11;
     public static final int DELETE_LOADER_ID = 33;
+    public static final int ONE_TRAILER = 1;
+    public static final int NO_TRAILER = 0;
+    public static final int ONE_COMMENT = 1;
+    public static final int NO_COMMENT = 0;
+    public static final int DELAYS_IN_MILLISECONDS = 3000;
+    public static final int NO_DATA_IN_CURSOR = 0;
     public static final String LOADER_ARGUMENTS = "args";
     public static final String JSON_REVIEWS = "reviews";
     public static final String JSON_VIDEOS = "videos";
@@ -300,6 +307,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
+                } else {
+                    Toast.makeText(DetailActivity.this, R.string.youtube_app, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -331,11 +340,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         if (mTrailersArray != null && !mTrailersArray.isEmpty()){
             mTrailerAdapter.changeTrailerData(mTrailersArray);
 
-            if (mTrailersArray.size() == 1){
+            if (mTrailersArray.size() == ONE_TRAILER){
                 mTrailerHeader.setText(R.string.trailer);
             }
         }
-        if (mTrailersArray == null || mTrailersArray.size() == 0){
+        if (mTrailersArray == null || mTrailersArray.size() == NO_TRAILER){
             mTrailerHeader.setVisibility(View.GONE);
             mTrailersRecyclerView.setVisibility(View.GONE);
         }
@@ -346,11 +355,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         if (mCommentsArray != null && !mCommentsArray.isEmpty()){
         mCommentAdapter.changeCommentData(mCommentsArray);
 
-            if (mCommentsArray.size() == 1){
+            if (mCommentsArray.size() == ONE_COMMENT){
                 mCommentsHeader.setText(R.string.comment);
             }
         }
-        if (mCommentsArray == null || mCommentsArray.size()==0){
+        if (mCommentsArray == null || mCommentsArray.size()==NO_COMMENT){
             mCommentsHeader.setVisibility(View.GONE);
             mCommentsRecyclerView.setVisibility(View.GONE);
         }
@@ -383,7 +392,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                     if (uri != null) {
                         mFavouriteImage.setImageResource(R.drawable.favourite);
                         mFavorite = true;
-                        Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+                        setDelayImageView();
                     }
                 } else {
                     LoaderManager.LoaderCallbacks<Integer> deleteFavourite = new LoaderManager.LoaderCallbacks<Integer>() {
@@ -398,6 +407,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
                             if (data > 0) {
                                 mFavouriteImage.setImageResource(R.drawable.not_favourite);
                                 mFavorite = false;
+                                setDelayImageView();
                             }
                         }
 
@@ -429,7 +439,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.getCount() > 0){
+        if (data != null && data.getCount() > NO_DATA_IN_CURSOR){
             mFavouriteImage.setImageResource(R.drawable.favourite);
             mFavorite = true;
         } else {
@@ -453,5 +463,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         return bundle;
     }
-
+    private void setDelayImageView(){
+        /** Uses information from:
+         * https://stackoverflow.com/questions/42486393/make-all-buttons-un-clickable-for-5-seconds
+         */
+        mFavouriteImage.setClickable(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mFavouriteImage.setClickable(true);
+            }
+        },DELAYS_IN_MILLISECONDS);
+    }
 }

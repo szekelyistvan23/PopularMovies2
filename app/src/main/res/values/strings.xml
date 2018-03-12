@@ -30,4 +30,11 @@
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="favourite">Favourite</string>
     <string name="no_data">No data available</string>
+    <string name="youtube_app">Install Youtube app for android!</string>
+    <string name="unknown_uri">Unknown uri: </string>
+    <string name="not_yet">Not yet implemented!</string>
+    <string name="failed_insert">Failed to insert row into</string>
+    <string name="no_favourite_movies">No favourite movies!</string>
+    <string name="favourite_or_not_favourite">Image for favourite or not favourite.</string>
+    <string name="trailer_s_image">Trailer\'s image.</string>
 </resources>

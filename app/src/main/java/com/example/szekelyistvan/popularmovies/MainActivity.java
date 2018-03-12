@@ -103,8 +103,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String LANGUAGE_QUERY_VALUE = "en-US";
     public static final String PAGE_QUERY = "page";
     public static final String PAGE_QUERY_VALUE = "1";
+    public static final String DEFAULT_QUERY = "default_query";
+    public static final String ACTIVITY_TITLE = "title";
     public static final double AVERAGE_VOTE_FALLBACK = 0.0;
     public static final int DEFAULT_IMAGE_WIDTH = 185;
+    public static final int FAVOURITES_LOADER_ID = 22;
+    public static final int FIRST_POSITION = 0;
+    public static final int NO_FAVOURITES = 0;
     @BindView(R.id.recycler_view_main) RecyclerView mRecyclerView;
     @BindView(R.id.main_progress_bar) ProgressBar mMainProgressBar;
     private MovieAdapter mAdapter;
@@ -134,8 +139,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (haveNetworkConnection()) {
                 downloadData(defaultQuery);
         } else {
-            finish();
-            showToast(getString(R.string.no_internet));
+            defaultQuery = FAVOURITE;
+            downloadData(defaultQuery);
         }
     }
 
@@ -184,11 +189,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-//                            if (moviesArray != null && !moviesArray.isEmpty()) {
-//                                mAdapter.changeMovieData(moviesArray);
-//                                mMainProgressBar.setVisibility(View.INVISIBLE);
-//                            }
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             queue.add(stringRequest);
         } else {
-            getSupportLoaderManager().initLoader(22, null, this);
+            getSupportLoaderManager().restartLoader(FAVOURITES_LOADER_ID, null, this);
             mMainProgressBar.setVisibility(View.INVISIBLE);
             setTitle(getString(R.string.favourite_title));
         }
@@ -259,14 +259,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean haveNetworkConnection() {
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        try {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null) {
             if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI && networkInfo.isConnected()) {
-                    return true;
+                return true;
             } else if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && networkInfo.isConnected()) {
-                    return true;
+                return true;
             }
         }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            }
         return false;
     }
 
@@ -279,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             setTitle(getString(R.string.popular_movies_title));
             saveSharedPreferences();
             mMainProgressBar.setVisibility(View.VISIBLE);
-            mLayoutManager.scrollToPosition(0);
+            mLayoutManager.scrollToPosition(FIRST_POSITION);
             downloadData(defaultQuery);
         }
     }
@@ -293,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             setTitle(getString(R.string.highest_rated_title));
             saveSharedPreferences();
             mMainProgressBar.setVisibility(View.VISIBLE);
-            mLayoutManager.scrollToPosition(0);
+            mLayoutManager.scrollToPosition(FIRST_POSITION);
             downloadData(defaultQuery);
         }
     }
@@ -307,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             setTitle(getString(R.string.favourite_title));
             saveSharedPreferences();
             mMainProgressBar.setVisibility(View.VISIBLE);
-            mLayoutManager.scrollToPosition(0);
+            mLayoutManager.scrollToPosition(FIRST_POSITION);
             downloadData(defaultQuery);
 
 
@@ -361,9 +365,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int orientation = this.getResources().getConfiguration().orientation;
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            return (int) height / DEFAULT_IMAGE_WIDTH;
+            return height / DEFAULT_IMAGE_WIDTH;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT){
-            return (int) width / DEFAULT_IMAGE_WIDTH;
+            return width / DEFAULT_IMAGE_WIDTH;
         }
         return 1;
     }
@@ -392,6 +396,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data != null && defaultQuery.equals(FAVOURITE)) {
             mAdapter.changeMovieData(cursorToArrayList(data));
+        }
+
+        try {
+            if (data.getCount() == NO_FAVOURITES && defaultQuery.equals(FAVOURITE)) {
+                showToast(getString(R.string.no_favourite_movies));
+            }
+        } catch (NullPointerException e){
+            e.printStackTrace();
         }
     }
 
@@ -425,15 +437,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void saveSharedPreferences(){
         SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("default_query", defaultQuery);
-        editor.putString("title", getTitle().toString());
+        editor.putString(DEFAULT_QUERY, defaultQuery);
+        editor.putString(ACTIVITY_TITLE, getTitle().toString());
         editor.apply();
     }
 
     /** Reads data from shared preferences */
     private void readSharedPreferences(){
         SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        defaultQuery = sharedPreferences.getString("default_query", POPULAR);
-        setTitle(sharedPreferences.getString("title", getString(R.string.popular_movies_title)));
+        defaultQuery = sharedPreferences.getString(DEFAULT_QUERY, POPULAR);
+        setTitle(sharedPreferences.getString(ACTIVITY_TITLE, getString(R.string.popular_movies_title)));
     }
 }

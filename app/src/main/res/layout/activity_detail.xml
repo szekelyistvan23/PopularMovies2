@@ -3,7 +3,6 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:padding="@dimen/bigger_margin"
-    android:background="@color/backgroundColor"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -189,6 +188,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
+            android:contentDescription="@string/favourite_or_not_favourite"
             app:layout_constraintBottom_toBottomOf="@+id/background_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/not_favourite" />
