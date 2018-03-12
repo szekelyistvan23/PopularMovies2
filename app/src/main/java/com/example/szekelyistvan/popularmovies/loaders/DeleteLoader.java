@@ -10,7 +10,7 @@ import static com.example.szekelyistvan.popularmovies.DetailActivity.LOADER_ARGU
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
 
 /**
- * Created by Szekely Istvan on 10.03.2018.
+ * Deletes the selected movie from the content provider.
  */
 
 public class DeleteLoader extends AsyncTaskLoader<Integer>{

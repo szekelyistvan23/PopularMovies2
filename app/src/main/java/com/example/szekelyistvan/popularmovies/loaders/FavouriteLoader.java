@@ -13,13 +13,11 @@ import static com.example.szekelyistvan.popularmovies.DetailActivity.LOADER_ARGU
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
 
 /**
- * Created by morpheus on 10.03.2018.
+ * Queries the content provider if the movie is favourite or not.
  */
 
 public class FavouriteLoader extends AsyncTaskLoader<Cursor> {
-
     private Bundle mArguments;
-//    private Cursor mFavouriteData = null;
 
     public FavouriteLoader(@NonNull Context context, Bundle args) {
         super(context);
@@ -28,11 +26,7 @@ public class FavouriteLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     protected void onStartLoading() {
-//        if (mFavouriteData != null) {
-//            deliverResult(mFavouriteData);
-//        } else {
             forceLoad();
-//        }
     }
 
     @Nullable
@@ -52,11 +46,5 @@ public class FavouriteLoader extends AsyncTaskLoader<Cursor> {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public void deliverResult(@Nullable Cursor data) {
-//        mFavouriteData = data;
-        super.deliverResult(data);
     }
 }

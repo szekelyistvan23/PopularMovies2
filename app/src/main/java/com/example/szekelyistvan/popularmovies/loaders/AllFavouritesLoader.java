@@ -7,7 +7,7 @@ import android.database.Cursor;
 import static com.example.szekelyistvan.popularmovies.utils.FavouritesContract.FavouritesEntry.CONTENT_URI;
 
 /**
- * Created by Szekely Istvan on 09.03.2018.
+ * Loads all favourites movies from the content provider to a RecyclerView.
  */
 
 public class AllFavouritesLoader extends AsyncTaskLoader<Cursor>{
@@ -34,10 +34,5 @@ public class AllFavouritesLoader extends AsyncTaskLoader<Cursor>{
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public void deliverResult(Cursor data) {
-        super.deliverResult(data);
     }
 }

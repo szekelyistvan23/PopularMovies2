@@ -16,7 +16,7 @@
 package com.example.szekelyistvan.popularmovies;
 
 /**
- * Displays a RecyclerView with popular or top rated movies.
+ * Displays a RecyclerView with popular, top rated or favourite movies.
  */
 
 import android.content.Context;
@@ -164,10 +164,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
-
-
     }
     /** Downloads JSON data from the Internet. */
     private void downloadData(@MovieListType String query){
@@ -197,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     Toast.makeText(MainActivity.this, R.string.wrong, Toast.LENGTH_SHORT).show();
                 }
             });
-
             queue.add(stringRequest);
         } else {
             getSupportLoaderManager().restartLoader(FAVOURITES_LOADER_ID, null, this);
@@ -213,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return true;
     }
 
-    /** Implements custom menu with two elements. */
+    /** Implements custom menu with three elements. */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -385,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         return stringBuilder.toString();
     }
-
+    /** Using loader to load favourite movies from content provider. */
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -411,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     }
 
+    /** Transforms cursor object to an array. */
     private List<Movie> cursorToArrayList (Cursor cursor){
         List<Movie> resultArrayList = new ArrayList<>();
             while (cursor.moveToNext()){
@@ -433,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
             saveSharedPreferences();
     }
-    /** Saves data to shared preferences */
+    /** Saves data to shared preferences. */
     private void saveSharedPreferences(){
         SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -442,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         editor.apply();
     }
 
-    /** Reads data from shared preferences */
+    /** Reads data from shared preferences. */
     private void readSharedPreferences(){
         SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         defaultQuery = sharedPreferences.getString(DEFAULT_QUERY, POPULAR);

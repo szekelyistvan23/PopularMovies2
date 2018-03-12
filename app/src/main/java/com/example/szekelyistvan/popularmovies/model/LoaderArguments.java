@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Szekely Istvan on 10.03.2018.
+ * Passes the movie's id to a loader, implemented because the object must be parcelable.
  */
 
 public class LoaderArguments implements Parcelable {

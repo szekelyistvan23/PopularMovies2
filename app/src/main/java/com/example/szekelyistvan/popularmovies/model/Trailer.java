@@ -1,7 +1,7 @@
 package com.example.szekelyistvan.popularmovies.model;
 
 /**
- * Stores the links to a movie's trailers on Youtube.
+ * Stores the links to a movie's trailers from Youtube.
  */
 
 public class Trailer {

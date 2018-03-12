@@ -15,7 +15,7 @@
 package com.example.szekelyistvan.popularmovies;
 
 /**
- * Displays data from an object received trough an intent.
+ * Displays data from an object received trough an intent, also downloads trailers and comments data.
  */
 
 import android.content.ContentValues;
@@ -234,7 +234,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         queue.add(stringRequest);
 
     }
-
+    /** Makes a string to download details about the movie. */
     private String detailBuildStringForRequest(){
         return DETAIL_BASE_URL + mMovieDetail.getId() + DETAIL_URL_LAST_PART;
     }
@@ -366,7 +366,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
 
     }
-
+    /** Sets a movie as favourite or not favourite depending on the initial state. */
     private void onClickManageFavourite (){
         ButterKnife.bind(this);
 
@@ -423,14 +423,14 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             }
         });
     }
-
+    /** Queries if a movie is favourite or not favourite. */
     private void queryFavouriteState(){
         Bundle bundle = loaderArgumentsToBundle();
         getSupportLoaderManager().initLoader(QUERY_LOADER_ID, bundle, this);
 
     }
 
-
+    /** Queries a content provider to check if a movie is favourite or not.*/
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -454,6 +454,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     }
 
+    /** Needed to set specific query for the content provider based on the movie's id.*/
     private Bundle loaderArgumentsToBundle(){
         Bundle bundle = new Bundle();
         String [] loaderSelectionArgs  = {mMovieDetail.getId().toString()};
@@ -463,6 +464,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         return bundle;
     }
+
+    /** Sets a delay after clicking the favourite or not favourite ImageView. */
     private void setDelayImageView(){
         /** Uses information from:
          * https://stackoverflow.com/questions/42486393/make-all-buttons-un-clickable-for-5-seconds

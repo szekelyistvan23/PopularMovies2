@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 
 /**
  * This is a custom adapter for a RecyclerView, it is displaying only an ImageView.
- * Implements an OnClickListener interface to open a DetailActivity for the selected item.
+ * Implements an OnClickListener interface to open a DetailActivity for the selected movie.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {

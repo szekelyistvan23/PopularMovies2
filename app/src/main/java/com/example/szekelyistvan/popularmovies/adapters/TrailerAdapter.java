@@ -32,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * This is a custom adapter for a RecyclerView, it is displaying only an ImageView and a TextView.
+ * This is a custom adapter for a RecyclerView, it is displaying an ImageView and a TextView.
  * Implements an OnClickListener interface to open the selected trailer with an intent.
  */
 
