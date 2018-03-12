@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_popular));
         } else {
             defaultQuery = POPULAR;
+            mMainProgressBar.setVisibility(View.VISIBLE);
             mLayoutManager.scrollToPosition(0);
             downloadData(defaultQuery);
             mAdapter.changeMovieData(moviesArray);
@@ -296,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_top));
         } else {
             defaultQuery = TOP_RATED;
+            mMainProgressBar.setVisibility(View.VISIBLE);
             mLayoutManager.scrollToPosition(0);
             downloadData(defaultQuery);
             mAdapter.changeMovieData(moviesArray);
@@ -309,7 +311,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             showToast(getString(R.string.already_favourite));
         } else {
             defaultQuery = FAVOURITE;
+            mMainProgressBar.setVisibility(View.VISIBLE);
             getSupportLoaderManager().initLoader(22, null, this).forceLoad();
+            mMainProgressBar.setVisibility(View.INVISIBLE);
             setTitle(getString(R.string.favourite_title));
         }
     }
