@@ -51,7 +51,7 @@ import com.example.szekelyistvan.popularmovies.loaders.LoaderArguments;
 import com.example.szekelyistvan.popularmovies.model.Movie;
 import com.example.szekelyistvan.popularmovies.model.Trailer;
 import com.example.szekelyistvan.popularmovies.loaders.DeleteLoader;
-import com.example.szekelyistvan.popularmovies.utils.FavouriteLoader;
+import com.example.szekelyistvan.popularmovies.loaders.FavouriteLoader;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 

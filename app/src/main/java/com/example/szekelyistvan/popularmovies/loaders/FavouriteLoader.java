@@ -1,4 +1,4 @@
-package com.example.szekelyistvan.popularmovies.utils;
+package com.example.szekelyistvan.popularmovies.loaders;
 
 import android.content.Context;
 import android.database.Cursor;
