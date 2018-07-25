@@ -13,3 +13,7 @@ Expand on the movies app you built in Project 1 to create a fully-featured app. 
 ## Note
 
 To run the app you need an API key from themoviedb.org, more about it at the beginning of MainActivity.java.
+
+## Screenshots
+
+![Screenshot](popular2.gif)
